@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: factory_postgres
+    environment:
+      POSTGRES_USER: factory_user
+      POSTGRES_PASSWORD: factory_password
+      POSTGRES_DB: factory_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: factory_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: factory_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://factory_user:factory_password@postgres:5432/factory_db?schema=public
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=supersecret_factory_key_change_in_production
+      - PORT=5000
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend/src:/app/src
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: factory_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

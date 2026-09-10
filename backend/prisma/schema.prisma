@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password_hash String
+  name          String
+  role          String   @default("MAINTENANCE") // ADMIN or MAINTENANCE
+  createdAt     DateTime @default(now())
+
+  assignedMaintenance Maintenance[]
+  serviceHistory      ServiceHistory[]
+}
+
+model Machine {
+  id                String    @id @default(uuid())
+  name              String
+  code              String    @unique
+  model             String
+  manufacturer      String
+  department        String
+  location          String
+  installation_date DateTime
+  status            String    @default("ACTIVE") // ACTIVE, UNDER_MAINTENANCE, INACTIVE, BREAKDOWN
+  isOperational     Boolean   @default(true)
+  description       String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  maintenance    Maintenance[]
+  serviceHistory ServiceHistory[]
+  warranties     Warranty[]
+}
+
+model SparePart {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  category    String
+  quantity    Int      @default(0)
+  min_stock   Int      @default(0)
+  unit        String
+  location    String
+  unit_price  Float    @default(0.0)
+  description String?
+  supplierId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  supplier       Supplier?       @relation(fields: [supplierId], references: [id])
+  stockMovements StockMovement[]
+  warranties     Warranty[]
+}
+
+model Supplier {
+  id             String   @id @default(uuid())
+  name           String
+  company        String
+  contact_person String?
+  phone          String?
+  email          String?
+  address        String?
+  status         String   @default("ACTIVE") // ACTIVE, INACTIVE
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  warranties Warranty[]
+  spareParts SparePart[]
+}
+
+model Maintenance {
+  id                   String    @id @default(uuid())
+  machineId            String
+  type                 String // Preventive Maintenance, Inspection, Repair, etc.
+  scheduled_date       DateTime
+  expected_completion_date DateTime?
+  start_date           DateTime?
+  frequency            String // e.g., 'Monthly', 'Yearly', 'One-time'
+  assignedTechnicianId String?
+  priority             String // LOW, MEDIUM, HIGH, URGENT
+  status               String    @default("SCHEDULED") // SCHEDULED, IN_PROGRESS, COMPLETED, OVERDUE, CANCELLED
+  description          String?
+  completion_date      DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  machine            Machine          @relation(fields: [machineId], references: [id])
+  assignedTechnician User?            @relation(fields: [assignedTechnicianId], references: [id])
+  serviceHistory     ServiceHistory[]
+}
+
+model ServiceHistory {
+  id                  String   @id @default(uuid())
+  machineId           String
+  maintenanceId       String?
+  service_date        DateTime @default(now())
+  type                String
+  technicianId        String
+  problem_description String
+  work_performed      String
+  cost                Float    @default(0.0)
+  status              String   @default("COMPLETED")
+  remarks             String?
+  createdAt           DateTime @default(now())
+
+  machine      Machine      @relation(fields: [machineId], references: [id])
+  maintenance  Maintenance? @relation(fields: [maintenanceId], references: [id])
+  technician   User         @relation(fields: [technicianId], references: [id])
+}
+
+model Warranty {
+  id           String    @id @default(uuid())
+  warrantyType String    @default("MACHINE") // 'MACHINE' or 'SPARE_PART'
+  machineId    String?
+  sparePartId  String?
+  purchaseDate DateTime?
+  type         String    @default("Standard")
+  start_date   DateTime
+  end_date     DateTime
+  supplierId   String
+  status       String    @default("ACTIVE") // ACTIVE, EXPIRED, UPCOMING
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  supplier     Supplier   @relation(fields: [supplierId], references: [id])
+  machine      Machine?   @relation(fields: [machineId], references: [id])
+  sparePart    SparePart? @relation(fields: [sparePartId], references: [id])
+}
+
+model StockMovement {
+  id              String   @id @default(uuid())
+  partId          String
+  quantity_change Int
+  movement_type   String // IN, OUT, ADJUSTMENT
+  reference_id    String? // ID of service history or PO
+  date            DateTime @default(now())
+  remarks         String?
+  createdAt       DateTime @default(now())
+
+  part SparePart @relation(fields: [partId], references: [id])
+}
+
+model Alert {
+  id          String   @id @default(uuid())
+  type        String   // MAINTENANCE, INVENTORY, WARRANTY
+  title       String
+  message     String
+  priority    String   // LOW, MEDIUM, HIGH, CRITICAL
+  status      String   @default("UNREAD") // UNREAD, READ
+  relatedId   String?  // ID of the related machine/part/maintenance
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
