@@ -19,7 +19,7 @@ const Login = () => {
     setIsLoading(true);
     setError('');
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/login`,
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`,
   { email, password }
 );
       console.log("LOGIN RESPONSE:", response.data);
