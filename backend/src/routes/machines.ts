@@ -42,14 +42,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', requireAdmin, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const machine = await prisma.machine.create({
       data: req.body
     });
     res.status(201).json(machine);
   } catch (error) {
-    res.status(400).json({ message: 'Error creating machine' });
+    console.error("MACHINE CREATE ERROR:", error);
+    res.status(400).json({ message: 'Error creating machine', error: error });
   }
 });
 
