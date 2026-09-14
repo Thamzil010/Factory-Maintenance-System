@@ -14,7 +14,7 @@ const Maintenance = () => {
   const fetchMaintenance = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/maintenance', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/maintenance`, { headers: { Authorization: `Bearer ${token}` } });
       setRecords(response.data);
     } catch (error) {
       console.error('Error fetching maintenance', error);
@@ -24,7 +24,7 @@ const Maintenance = () => {
   const fetchMachines = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines`, { headers: { Authorization: `Bearer ${token}` } });
       setMachines(response.data);
       if(response.data.length > 0) setFormData(prev => ({...prev, machineId: response.data[0].id}));
     } catch (error) {
@@ -41,7 +41,7 @@ const Maintenance = () => {
     if (!confirm(`Start maintenance for ${record.machine.name}?`)) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/maintenance/${record.id}`, { status: 'IN_PROGRESS' }, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/maintenance/${record.id}`, { status: 'IN_PROGRESS' }, { headers: { Authorization: `Bearer ${token}` } });
       fetchMaintenance();
     } catch (error: any) {
       alert(error.response?.data?.message || 'Error starting maintenance');
@@ -55,7 +55,7 @@ const Maintenance = () => {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/maintenance/${record.id}`, { status: 'COMPLETED', work_performed: work }, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/maintenance/${record.id}`, { status: 'COMPLETED', work_performed: work }, { headers: { Authorization: `Bearer ${token}` } });
       fetchMaintenance();
     } catch (error: any) {
       alert(error.response?.data?.message || 'Error marking completed');
@@ -71,7 +71,7 @@ const Maintenance = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/maintenance', {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/maintenance`, {
         machineId: formData.machineId,
         type: formData.type,
         scheduled_date: new Date(formData.scheduled_date).toISOString(),

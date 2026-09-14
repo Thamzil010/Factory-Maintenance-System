@@ -36,10 +36,10 @@ const Warranties = () => {
     const headers = { Authorization: `Bearer ${token}` };
     try {
       const [warRes, supRes, machRes, partRes] = await Promise.all([
-        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/warranties', { headers }),
-        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/suppliers', { headers }),
-        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines', { headers }),
-        axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts', { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/warranties`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/suppliers`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines`, { headers }),
+        axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts`, { headers }),
       ]);
       setWarranties(warRes.data);
       setSuppliers(supRes.data);
@@ -103,7 +103,7 @@ const Warranties = () => {
         }
       }
 
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/warranties', payload, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/warranties`, payload, { headers: { Authorization: `Bearer ${token}` } });
       setIsModalOpen(false);
       fetchData();
     } catch (error) {
@@ -115,7 +115,7 @@ const Warranties = () => {
     if(!confirm('Delete this warranty?')) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/warranties/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/warranties/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchData();
     } catch (error) {
       alert('Error deleting warranty');

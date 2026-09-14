@@ -10,8 +10,8 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       const config = { headers: { Authorization: `Bearer ${token}` } };
       try {
-        const statsRes = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/stats', config);
-        const alertsRes = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/dashboard/alerts', config);
+        const statsRes = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/dashboard/stats`, config);
+        const alertsRes = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/dashboard/alerts`, config);
         setStats(statsRes.data);
         setAlerts(alertsRes.data);
       } catch (error) {

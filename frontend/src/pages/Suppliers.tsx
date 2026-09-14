@@ -10,7 +10,7 @@ const Suppliers = () => {
   const fetchSuppliers = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/suppliers', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/suppliers`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSuppliers(response.data);
@@ -27,7 +27,7 @@ const Suppliers = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/suppliers', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/suppliers`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsModalOpen(false);
@@ -41,7 +41,7 @@ const Suppliers = () => {
     if(!confirm('Delete this supplier?')) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/suppliers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/suppliers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchSuppliers();
     } catch (error) {
       alert('Error deleting supplier');

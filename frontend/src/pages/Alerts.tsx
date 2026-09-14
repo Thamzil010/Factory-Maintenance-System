@@ -9,7 +9,7 @@ const Alerts = () => {
     const fetchAlerts = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/alerts`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/alerts`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAlerts(response.data);
@@ -23,7 +23,7 @@ const Alerts = () => {
   const markRead = async (id: string) => {
     const token = localStorage.getItem('token');
     try {
-      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/alerts/${id}/read`, {}, {
+      await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/alerts/${id}/read`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAlerts(alerts.map((a: any) => a.id === id ? { ...a, status: 'READ' } : a));

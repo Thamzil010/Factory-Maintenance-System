@@ -11,7 +11,7 @@ const Users = () => {
   const fetchUsers = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/users`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -30,7 +30,7 @@ const Users = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users', formData, {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/users`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setIsModalOpen(false);
@@ -45,7 +45,7 @@ const Users = () => {
     if(!confirm('Delete this user?')) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/users/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/users/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchUsers();
     } catch (error) {
       alert('Error deleting user. Make sure they do not have active maintenance tasks.');

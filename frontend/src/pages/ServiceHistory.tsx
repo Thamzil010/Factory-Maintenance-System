@@ -8,7 +8,7 @@ const ServiceHistory = () => {
     const fetchHistory = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/service-history', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/service-history`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setHistory(response.data);

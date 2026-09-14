@@ -12,7 +12,7 @@ const Machines = () => {
   const fetchMachines = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines`, { headers: { Authorization: `Bearer ${token}` } });
       setMachines(response.data);
     } catch (error) {
       console.error('Error fetching machines', error);
@@ -26,7 +26,7 @@ const Machines = () => {
     const token = localStorage.getItem('token');
     try {
       const payload = { ...formData, location: 'Factory Floor', installation_date: new Date().toISOString() };
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines', payload, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines`, payload, { headers: { Authorization: `Bearer ${token}` } });
       setIsModalOpen(false);
       fetchMachines();
     } catch (error) {
@@ -38,7 +38,7 @@ const Machines = () => {
     if(!confirm('Delete this machine?')) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchMachines();
     } catch (error) {
       alert('Error deleting machine');
@@ -48,7 +48,7 @@ const Machines = () => {
   const openDetails = async (id: string) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/machines/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/machines/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       setSelectedMachine(response.data);
       setIsDetailModalOpen(true);
     } catch (error) {

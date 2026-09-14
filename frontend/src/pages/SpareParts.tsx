@@ -22,7 +22,7 @@ const SpareParts = () => {
   const fetchParts = async () => {
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts', { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts`, { headers: { Authorization: `Bearer ${token}` } });
       setParts(response.data);
     } catch (error) {
       console.error('Error fetching spare parts', error);
@@ -35,7 +35,7 @@ const SpareParts = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      await axios.post('${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts', newPartFormData, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts`, newPartFormData, { headers: { Authorization: `Bearer ${token}` } });
       setIsNewPartModalOpen(false);
       alert('Spare part created successfully');
       fetchParts();
@@ -55,7 +55,7 @@ const SpareParts = () => {
     const change = stockActionType === 'PURCHASE' ? stockFormData.quantity_change : -stockFormData.quantity_change;
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts/${selectedPart.id}/stock`, {
+      await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts/${selectedPart.id}/stock`, {
         quantity_change: change,
         movement_type: stockActionType,
         reference_id: stockFormData.reference_id,
@@ -74,7 +74,7 @@ const SpareParts = () => {
     setSelectedPart(part);
     const token = localStorage.getItem('token');
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts/${part.id}/history`, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts/${part.id}/history`, { headers: { Authorization: `Bearer ${token}` } });
       setHistoryData(response.data);
       setIsHistoryModalOpen(true);
     } catch (error) {
@@ -86,7 +86,7 @@ const SpareParts = () => {
     if(!confirm('Delete this part? This will also delete its stock movement history.')) return;
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/spare-parts/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/spare-parts/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       fetchParts();
     } catch (error) {
       alert('Error deleting part');
