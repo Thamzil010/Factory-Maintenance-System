@@ -70,13 +70,13 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const password_hash = await bcrypt.hash(password, salt);
 
-    // Create user (default role: USER)
+    // Create user (default role: ADMIN for this prototype)
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password_hash,
-        role: 'USER'
+        role: 'ADMIN'
       }
     });
 
